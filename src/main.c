@@ -40,17 +40,6 @@ void populate_random_byte(bool *out) {
     }
 }
 
-void populate_byte_from_operation(bool const *operand, bool *out) {
-    bool temp[BYTE_SIZE];
-    populate_random_byte(temp);
-
-    if (random() % 2) {
-        and_bytes(operand, temp, out);
-    } else {
-        xor_bytes(operand, temp, out);
-    }
-}
-
 void print_byte(bool const *byte) {
     for (int i = 0; i < BYTE_SIZE; ++i) {
         printf("%i", byte[i]);
@@ -65,10 +54,8 @@ void create_byte_rows(int rows) {
         bytes[row] = calloc(BYTE_SIZE, sizeof(bool));
         if (row == 0) {
             populate_initial_byte(bytes[row]);
-        } else if (row == 1) {
-            populate_random_byte(bytes[row]);
         } else {
-            populate_byte_from_operation(bytes[row - 1], bytes[row]);
+            populate_random_byte(bytes[row]);
         }
     }
 
