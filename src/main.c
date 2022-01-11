@@ -1,7 +1,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <termios.h>
 #include <time.h>
+#include <unistd.h>
 
 #define BYTE_SIZE 8
 
@@ -77,8 +79,21 @@ void free_bytes() {
 
 int main() {
     srandom(time(0));
-
     create_byte_rows(4);
-    print_bytes();
+
+    struct termios old_termios, new_termios;
+    tcgetattr(STDIN_FILENO, &old_termios);
+    new_termios = old_termios;
+    new_termios.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_termios);
+
+    char c;
+    do {
+        print_bytes();
+
+    } while ((c = getchar()) != 'q');
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &old_termios);
+
     free_bytes();
 }
