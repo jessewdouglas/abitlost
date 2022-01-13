@@ -26,6 +26,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 bool **bytes;
 int byte_rows;
 int current_row;
+int rows_printed;
 
 long random_range(int lower, int upper) {
     return random() % (upper - lower + 1) + lower;
@@ -63,6 +64,7 @@ void print_byte(bool const *byte) {
         printf("%i", byte[i]);
     }
     printf("\n");
+    ++rows_printed;
 }
 
 void create_byte_rows(int rows) {
@@ -80,17 +82,48 @@ void create_byte_rows(int rows) {
     byte_rows = rows;
 }
 
-void print_bytes() {
-    for (int i = 0; i < byte_rows; ++i) {
-        print_byte(bytes[i]);
-    }
-}
-
 void free_bytes() {
     for (int i = 0; i < byte_rows; ++i) {
         free(bytes[i]);
     }
     free(bytes);
+}
+
+void move_cursor_up(int rows) {
+    if (rows) {
+        printf("\033[%iA", rows);
+        rows_printed -= rows;
+    }
+}
+
+void print_bytes() {
+    move_cursor_up(rows_printed);
+
+    for (int i = 0; i < byte_rows; ++i) {
+        if (i < current_row) {
+            printf("\033[K\n");
+            ++rows_printed;
+        } else {
+            print_byte(bytes[i]);
+        }
+    }
+}
+
+void process_input(char c) {
+    switch (c) {
+    case 'a':
+    case '&':
+        and_bytes(bytes[current_row], bytes[current_row + 1],
+                  bytes[current_row + 1]);
+        ++current_row;
+        break;
+    case 'x':
+    case '^':
+        xor_bytes(bytes[current_row], bytes[current_row + 1],
+                  bytes[current_row + 1]);
+        ++current_row;
+        break;
+    }
 }
 
 int main() {
@@ -103,10 +136,10 @@ int main() {
     new_termios.c_lflag &= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &new_termios);
 
-    char c;
+    char c = 0;
     do {
+        process_input(c);
         print_bytes();
-
     } while ((c = getchar()) != 'q');
 
     tcsetattr(STDIN_FILENO, TCSANOW, &old_termios);
