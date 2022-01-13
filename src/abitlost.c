@@ -98,7 +98,6 @@ void move_cursor_up(int rows) {
 
 void print_bytes() {
     move_cursor_up(rows_printed);
-
     for (int i = 0; i < byte_rows; ++i) {
         if (i < current_row) {
             printf("\033[K\n");
@@ -112,12 +111,14 @@ void print_bytes() {
 void process_input(char c) {
     switch (c) {
     case 'a':
+    case 'A':
     case '&':
         and_bytes(bytes[current_row], bytes[current_row + 1],
                   bytes[current_row + 1]);
         ++current_row;
         break;
     case 'x':
+    case 'X':
     case '^':
         xor_bytes(bytes[current_row], bytes[current_row + 1],
                   bytes[current_row + 1]);
