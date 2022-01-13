@@ -1,4 +1,4 @@
-P=cjam2022
+P=abitlost
 OBJECTS=main.o
 CFLAGS=-std=c99 -g -Wall -Wextra -pedantic
 
