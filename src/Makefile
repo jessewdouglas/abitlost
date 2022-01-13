@@ -1,5 +1,5 @@
 P=abitlost
-OBJECTS=main.o
+OBJECTS=abitlost.o
 CFLAGS=-std=c99 -g -Wall -Wextra -pedantic
 
 $(P): $(OBJECTS)
