@@ -26,6 +26,8 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 bool **bytes;
 int byte_rows;
 int current_row;
+int destination[BYTE_SIZE];
+int game_level = 2;
 int rows_printed;
 
 long random_range(int lower, int upper) {
@@ -59,12 +61,29 @@ void populate_random_byte(bool *out) {
     }
 }
 
-void print_byte(bool const *byte) {
-    for (int i = 0; i < BYTE_SIZE; ++i) {
-        printf("%i", byte[i]);
+void set_destination() {
+    bool target[BYTE_SIZE];
+
+    for (int i = 0; i < byte_rows - 1; ++i) {
+        if (random() % 2) {
+            and_bytes(bytes[i], bytes[i + 1], target);
+        } else {
+            xor_bytes(bytes[i], bytes[i + 1], target);
+        }
     }
-    printf("\n");
-    ++rows_printed;
+
+    for (int i = 0; i < BYTE_SIZE; ++i) {
+        destination[i] = -1;
+    }
+
+    for (int i = 0; i < game_level; ++i) {
+        int random_bit = random_range(0, BYTE_SIZE - 1);
+        if (destination[random_bit] != -1) {
+            --i;
+            continue;
+        }
+        destination[random_bit] = target[random_bit];
+    }
 }
 
 void create_byte_rows(int rows) {
@@ -78,8 +97,9 @@ void create_byte_rows(int rows) {
             populate_random_byte(bytes[row]);
         }
     }
-
     byte_rows = rows;
+
+    set_destination();
 }
 
 void free_bytes() {
@@ -96,7 +116,29 @@ void move_cursor_up(int rows) {
     }
 }
 
-void print_bytes() {
+void print_byte(bool const *byte) {
+    for (int i = 0; i < BYTE_SIZE; ++i) {
+        printf("%i", byte[i]);
+    }
+    printf("\n");
+    ++rows_printed;
+}
+
+void print_destination() {
+    for (int i = 0; i < BYTE_SIZE; ++i) {
+        if (destination[i] == 0) {
+            printf("x");
+        } else if (destination[i] == 1) {
+            printf("v");
+        } else {
+            printf(" ");
+        }
+    }
+    printf("\n");
+    ++rows_printed;
+}
+
+void display() {
     move_cursor_up(rows_printed);
     for (int i = 0; i < byte_rows; ++i) {
         if (i < current_row) {
@@ -106,6 +148,8 @@ void print_bytes() {
             print_byte(bytes[i]);
         }
     }
+
+    print_destination();
 }
 
 void process_input(char c) {
@@ -140,7 +184,7 @@ int main() {
     char c = 0;
     do {
         process_input(c);
-        print_bytes();
+        display();
     } while ((c = getchar()) != 'q');
 
     tcsetattr(STDIN_FILENO, TCSANOW, &old_termios);
