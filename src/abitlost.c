@@ -23,12 +23,15 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #define BYTE_SIZE 8
 
+typedef enum { in_progress, game_won, game_lost } win_state;
+
 bool **bytes;
 int byte_rows;
 int current_row;
 int destination[BYTE_SIZE];
 int game_level = 2;
 int rows_printed;
+win_state current_win_state;
 
 long random_range(int lower, int upper) {
     return random() % (upper - lower + 1) + lower;
@@ -138,6 +141,22 @@ void print_destination() {
     ++rows_printed;
 }
 
+void print_ui() {
+    printf("\n");
+    switch (current_win_state) {
+    case game_lost:
+        printf("You lost. :(\033[K\n");
+        break;
+    case game_won:
+        printf("You won! :)\033[K\n");
+        break;
+    default:
+        printf("a/&: and\tx/^: xor\t q: quit\033[K\n");
+        break;
+    }
+    rows_printed += 2;
+}
+
 void display() {
     move_cursor_up(rows_printed);
     for (int i = 0; i < byte_rows; ++i) {
@@ -150,25 +169,42 @@ void display() {
     }
 
     print_destination();
+    print_ui();
 }
 
 void process_input(char c) {
-    switch (c) {
-    case 'a':
-    case 'A':
-    case '&':
-        and_bytes(bytes[current_row], bytes[current_row + 1],
-                  bytes[current_row + 1]);
-        ++current_row;
-        break;
-    case 'x':
-    case 'X':
-    case '^':
-        xor_bytes(bytes[current_row], bytes[current_row + 1],
-                  bytes[current_row + 1]);
-        ++current_row;
-        break;
+    if (current_win_state == in_progress) {
+        switch (c) {
+        case 'a':
+        case 'A':
+        case '&':
+            and_bytes(bytes[current_row], bytes[current_row + 1],
+                      bytes[current_row + 1]);
+            ++current_row;
+            break;
+        case 'x':
+        case 'X':
+        case '^':
+            xor_bytes(bytes[current_row], bytes[current_row + 1],
+                      bytes[current_row + 1]);
+            ++current_row;
+            break;
+        }
     }
+}
+
+void check_win() {
+    if (current_row < byte_rows - 1) {
+        current_win_state = in_progress;
+        return;
+    }
+    for (int i = 0; i < BYTE_SIZE; ++i) {
+        if (destination[i] > -1 && bytes[current_row][i] != destination[i]) {
+            current_win_state = game_lost;
+            return;
+        }
+    }
+    current_win_state = game_won;
 }
 
 int main() {
@@ -184,6 +220,7 @@ int main() {
     char c = 0;
     do {
         process_input(c);
+        check_win();
         display();
     } while ((c = getchar()) != 'q');
 
