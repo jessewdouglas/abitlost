@@ -30,7 +30,7 @@ int byte_rows;
 int current_row;
 int destination[BYTE_SIZE];
 int game_level = 2;
-int rows_printed;
+int lines_printed;
 win_state current_win_state;
 
 long random_range(int lower, int upper) {
@@ -112,19 +112,23 @@ void free_bytes() {
     free(bytes);
 }
 
-void move_cursor_up(int rows) {
-    if (rows) {
-        printf("\033[%iA", rows);
-        rows_printed -= rows;
+void move_cursor_up(int lines) {
+    if (lines) {
+        printf("\033[%iA", lines);
+        lines_printed -= lines;
     }
+}
+
+void print_new_line() {
+    printf("\033[K\n");
+    ++lines_printed;
 }
 
 void print_byte(bool const *byte) {
     for (int i = 0; i < BYTE_SIZE; ++i) {
         printf("%i", byte[i]);
     }
-    printf("\n");
-    ++rows_printed;
+    print_new_line();
 }
 
 void print_destination() {
@@ -137,32 +141,30 @@ void print_destination() {
             printf(" ");
         }
     }
-    printf("\n");
-    ++rows_printed;
+    print_new_line();
 }
 
 void print_ui() {
-    printf("\n");
+    print_new_line();
     switch (current_win_state) {
     case game_lost:
-        printf("You lost. :(\033[K\n");
+        printf("You lost. :(");
         break;
     case game_won:
-        printf("You won! :)\033[K\n");
+        printf("You won! :)");
         break;
     default:
-        printf("a/&: and\tx/^: xor\t q: quit\033[K\n");
+        printf("a/&: and\tx/^: xor\t q: quit");
         break;
     }
-    rows_printed += 2;
+    print_new_line();
 }
 
 void display() {
-    move_cursor_up(rows_printed);
+    move_cursor_up(lines_printed);
     for (int i = 0; i < byte_rows; ++i) {
         if (i < current_row) {
-            printf("\033[K\n");
-            ++rows_printed;
+            print_new_line();
         } else {
             print_byte(bytes[i]);
         }
