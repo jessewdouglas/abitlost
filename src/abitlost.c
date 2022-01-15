@@ -124,9 +124,12 @@ void print_new_line() {
     ++lines_printed;
 }
 
-void print_byte(bool const *byte) {
+void print_byte(bool const *byte, bool is_current) {
     for (int i = 0; i < BYTE_SIZE; ++i) {
         printf("%i", byte[i]);
+    }
+    if (is_current) {
+        printf(" <-");
     }
     print_new_line();
 }
@@ -166,7 +169,7 @@ void display() {
         if (i < current_row) {
             print_new_line();
         } else {
-            print_byte(bytes[i]);
+            print_byte(bytes[i], i == current_row);
         }
     }
 
