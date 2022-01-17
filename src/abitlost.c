@@ -155,13 +155,13 @@ void print_ui() {
     print_new_line();
     switch (current_win_state) {
     case game_lost:
-        printf("You lost. :(  r: reset  q: quit");
+        printf("You lost. :(  r: reset level  q: quit");
         break;
     case game_won:
-        printf("You won! :)  n: next level  r: reset  q: quit");
+        printf("You won! :)  n: next level  r: reset level  q: quit");
         break;
     default:
-        printf("a/&: and  x/^: xor  r: reset  q: quit");
+        printf("a/&: and  x/^: xor  r: reset level  q: quit");
         break;
     }
     print_new_line();
