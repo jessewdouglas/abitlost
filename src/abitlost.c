@@ -130,10 +130,10 @@ void print_new_line() {
 
 void print_byte(bool const *byte, bool is_current) {
     for (int i = 0; i < BYTE_SIZE; ++i) {
-        printf("%i", byte[i]);
+        printf("%i ", byte[i]);
     }
     if (is_current) {
-        printf(" <-");
+        printf("<-");
     }
     print_new_line();
 }
@@ -141,11 +141,11 @@ void print_byte(bool const *byte, bool is_current) {
 void print_destination() {
     for (int i = 0; i < BYTE_SIZE; ++i) {
         if (destination[i] == 0) {
-            printf("x");
+            printf("x ");
         } else if (destination[i] == 1) {
-            printf("v");
+            printf("v ");
         } else {
-            printf(" ");
+            printf("  ");
         }
     }
     print_new_line();
@@ -155,13 +155,13 @@ void print_ui() {
     print_new_line();
     switch (current_win_state) {
     case game_lost:
-        printf("You lost. :(\tr: reset\tq: quit");
+        printf("You lost. :(  r: reset  q: quit");
         break;
     case game_won:
-        printf("You won! :)\tn: next level\tr: reset\tq: quit");
+        printf("You won! :)  n: next level  r: reset  q: quit");
         break;
     default:
-        printf("a/&: and\tx/^: xor\tr: reset\t q: quit");
+        printf("a/&: and  x/^: xor  r: reset  q: quit");
         break;
     }
     print_new_line();
