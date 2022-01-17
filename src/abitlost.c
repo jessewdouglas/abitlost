@@ -25,11 +25,13 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 typedef enum { in_progress, game_won, game_lost } win_state;
 
+struct termios old_termios;
+
 bool **bytes;
 int byte_rows;
 int current_row;
 int destination[BYTE_SIZE];
-int game_level = 2;
+int game_level;
 int lines_printed;
 win_state current_win_state;
 
@@ -106,10 +108,12 @@ void create_byte_rows(int rows) {
 }
 
 void free_bytes() {
-    for (int i = 0; i < byte_rows; ++i) {
-        free(bytes[i]);
+    if (byte_rows) {
+        for (int i = 0; i < byte_rows; ++i) {
+            free(bytes[i]);
+        }
+        free(bytes);
     }
-    free(bytes);
 }
 
 void move_cursor_up(int lines) {
@@ -151,13 +155,13 @@ void print_ui() {
     print_new_line();
     switch (current_win_state) {
     case game_lost:
-        printf("You lost. :(");
+        printf("You lost. :(\tr: reset\tq: quit");
         break;
     case game_won:
-        printf("You won! :)");
+        printf("You won! :)\tn: next level\tr: reset\tq: quit");
         break;
     default:
-        printf("a/&: and\tx/^: xor\t q: quit");
+        printf("a/&: and\tx/^: xor\tr: reset\t q: quit");
         break;
     }
     print_new_line();
@@ -177,8 +181,49 @@ void display() {
     print_ui();
 }
 
+void process_input(char);
+
+void check_win() {
+    if (current_row < byte_rows - 1) {
+        current_win_state = in_progress;
+        return;
+    }
+    for (int i = 0; i < BYTE_SIZE; ++i) {
+        if (destination[i] > -1 && bytes[current_row][i] != destination[i]) {
+            current_win_state = game_lost;
+            return;
+        }
+    }
+    current_win_state = game_won;
+}
+
+void start_game(int level) {
+    game_level = level;
+    create_byte_rows(game_level + 1);
+
+    char c = 0;
+    do {
+        process_input(c);
+        check_win();
+        display();
+    } while ((c = getchar()));
+}
+
+void restart_game(int level) {
+    free_bytes();
+    current_row = 0;
+    current_win_state = in_progress;
+    start_game(level);
+}
+
 void process_input(char c) {
-    if (current_win_state == in_progress) {
+    if (c == 'q' || c == 'Q') {
+        exit(0);
+    } else if (c == 'r' || c == 'R') {
+        restart_game(game_level);
+    } else if (current_win_state == game_won && (c == 'n' || c == 'N')) {
+        restart_game(game_level + 1);
+    } else if (current_win_state == in_progress) {
         switch (c) {
         case 'a':
         case 'A':
@@ -198,38 +243,23 @@ void process_input(char c) {
     }
 }
 
-void check_win() {
-    if (current_row < byte_rows - 1) {
-        current_win_state = in_progress;
-        return;
-    }
-    for (int i = 0; i < BYTE_SIZE; ++i) {
-        if (destination[i] > -1 && bytes[current_row][i] != destination[i]) {
-            current_win_state = game_lost;
-            return;
-        }
-    }
-    current_win_state = game_won;
+void set_termios() {
+    tcgetattr(STDIN_FILENO, &old_termios);
+    struct termios new_termios = old_termios;
+    new_termios.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_termios);
+}
+
+void on_exit() {
+    tcsetattr(STDIN_FILENO, TCSANOW, &old_termios);
+    free_bytes();
 }
 
 int main() {
     srandom(time(0));
-    create_byte_rows(4);
 
-    struct termios old_termios, new_termios;
-    tcgetattr(STDIN_FILENO, &old_termios);
-    new_termios = old_termios;
-    new_termios.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &new_termios);
+    set_termios();
+    atexit(on_exit);
 
-    char c = 0;
-    do {
-        process_input(c);
-        check_win();
-        display();
-    } while ((c = getchar()) != 'q');
-
-    tcsetattr(STDIN_FILENO, TCSANOW, &old_termios);
-
-    free_bytes();
+    start_game(1);
 }
