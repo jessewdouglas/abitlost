@@ -81,6 +81,7 @@ void set_destination() {
         destination[i] = -1;
     }
 
+    // TODO limit to BYTE_SIZE exits
     for (int i = 0; i < game_level; ++i) {
         int random_bit = random_range(0, BYTE_SIZE - 1);
         if (destination[random_bit] != -1) {
@@ -168,6 +169,7 @@ void print_ui() {
 }
 
 void display() {
+    // TODO add color and/or emoji
     move_cursor_up(lines_printed);
     for (int i = 0; i < byte_rows; ++i) {
         if (i < current_row) {
@@ -199,6 +201,8 @@ void check_win() {
 
 void start_game(int level) {
     game_level = level;
+    // TODO display level
+    // TODO alternate adding row or exit per level
     create_byte_rows(game_level + 1);
 
     char c = 0;
@@ -261,5 +265,6 @@ int main() {
     set_termios();
     atexit(on_exit);
 
+    // TODO display intro
     start_game(1);
 }
