@@ -66,7 +66,7 @@ void populate_random_byte(bool *out) {
     }
 }
 
-void set_destination() {
+void set_destination(void) {
     bool target[BYTE_SIZE];
 
     for (int i = 0; i < byte_rows - 1; ++i) {
@@ -108,7 +108,7 @@ void create_byte_rows(int rows) {
     set_destination();
 }
 
-void free_bytes() {
+void free_bytes(void) {
     if (byte_rows) {
         for (int i = 0; i < byte_rows; ++i) {
             free(bytes[i]);
@@ -124,7 +124,7 @@ void move_cursor_up(int lines) {
     }
 }
 
-void print_new_line() {
+void print_new_line(void) {
     printf("\033[K\n");
     ++lines_printed;
 }
@@ -139,7 +139,7 @@ void print_byte(bool const *byte, bool is_current) {
     print_new_line();
 }
 
-void print_destination() {
+void print_destination(void) {
     for (int i = 0; i < BYTE_SIZE; ++i) {
         if (destination[i] == 0) {
             printf("x ");
@@ -152,7 +152,7 @@ void print_destination() {
     print_new_line();
 }
 
-void print_ui() {
+void print_ui(void) {
     print_new_line();
     switch (current_win_state) {
     case game_lost:
@@ -168,7 +168,7 @@ void print_ui() {
     print_new_line();
 }
 
-void display() {
+void display(void) {
     // TODO add color and/or emoji
     move_cursor_up(lines_printed);
 
@@ -190,7 +190,7 @@ void display() {
 
 void process_input(char);
 
-void check_win() {
+void check_win(void) {
     if (current_row < byte_rows - 1) {
         current_win_state = in_progress;
         return;
@@ -251,14 +251,14 @@ void process_input(char c) {
     }
 }
 
-void set_termios() {
+void set_termios(void) {
     tcgetattr(STDIN_FILENO, &old_termios);
     struct termios new_termios = old_termios;
     new_termios.c_lflag &= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &new_termios);
 }
 
-void on_exit() {
+void on_exit(void) {
     tcsetattr(STDIN_FILENO, TCSANOW, &old_termios);
     free_bytes();
 }
