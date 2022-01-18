@@ -171,6 +171,11 @@ void print_ui() {
 void display() {
     // TODO add color and/or emoji
     move_cursor_up(lines_printed);
+
+    printf("Level %i", game_level);
+    print_new_line();
+    print_new_line();
+
     for (int i = 0; i < byte_rows; ++i) {
         if (i < current_row) {
             print_new_line();
@@ -201,7 +206,6 @@ void check_win() {
 
 void start_game(int level) {
     game_level = level;
-    // TODO display level
     // TODO alternate adding row or exit per level
     create_byte_rows(game_level + 1);
 
