@@ -208,7 +208,6 @@ void check_win(void) {
 
 void start_game(int level) {
     game_level = level;
-    // TODO alternate adding row or exit per level
     create_byte_rows();
 
     char c = 0;
