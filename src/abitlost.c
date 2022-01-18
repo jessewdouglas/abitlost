@@ -81,8 +81,9 @@ void set_destination(void) {
         destination[i] = -1;
     }
 
-    // TODO limit to BYTE_SIZE exits
-    for (int i = 0; i < game_level; ++i) {
+    int exits = (game_level / 2) + (game_level % 2);
+    exits = exits > BYTE_SIZE ? BYTE_SIZE : exits;
+    for (int i = 0; i < exits; ++i) {
         int random_bit = random_range(0, BYTE_SIZE - 1);
         if (destination[random_bit] != -1) {
             --i;
@@ -92,7 +93,8 @@ void set_destination(void) {
     }
 }
 
-void create_byte_rows(int rows) {
+void create_byte_rows(void) {
+    int rows = ((game_level / 2) + 1) + 1;
     bytes = calloc(rows, sizeof(bool *));
 
     for (int row = 0; row < rows; ++row) {
@@ -207,7 +209,7 @@ void check_win(void) {
 void start_game(int level) {
     game_level = level;
     // TODO alternate adding row or exit per level
-    create_byte_rows(game_level + 1);
+    create_byte_rows();
 
     char c = 0;
     do {
