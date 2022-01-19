@@ -23,6 +23,9 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #define BYTE_SIZE 8
 
+char const *const exit_char = "\033[1;32mO\033[0m";
+char const *const obstacle_char = "\033[1;31mX\033[0m";
+
 typedef enum { in_progress, game_won, game_lost } win_state;
 
 struct termios old_termios;
@@ -134,7 +137,8 @@ void print_new_line(void) {
 void print_intro(void) {
     printf("Help the lost bit escape the sea of bytes!\n");
     printf("Use bitwise AND and XOR operations to navigate to the exits.\n");
-    printf("Get 1s to each `v`, and 0s to each `x`.\n\n");
+    printf("Get 1s to each %s, and 0s to each %s.\n\n", exit_char,
+           obstacle_char);
 }
 
 void print_byte(bool const *byte, bool is_current) {
@@ -150,9 +154,9 @@ void print_byte(bool const *byte, bool is_current) {
 void print_destination(void) {
     for (int i = 0; i < BYTE_SIZE; ++i) {
         if (destination[i] == 0) {
-            printf("x ");
+            printf("%s ", obstacle_char);
         } else if (destination[i] == 1) {
-            printf("v ");
+            printf("%s ", exit_char);
         } else {
             printf("  ");
         }
@@ -177,7 +181,6 @@ void print_ui(void) {
 }
 
 void display(void) {
-    // TODO add color and/or emoji
     move_cursor_up(lines_printed);
 
     printf("Level %i", game_level);
