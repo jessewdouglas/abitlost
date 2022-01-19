@@ -131,6 +131,12 @@ void print_new_line(void) {
     ++lines_printed;
 }
 
+void print_intro(void) {
+    printf("Help the lost bit escape the sea of bytes!\n");
+    printf("Use bitwise AND and XOR operations to navigate to the exits.\n");
+    printf("Get 1s to each `v`, and 0s to each `x`.\n\n");
+}
+
 void print_byte(bool const *byte, bool is_current) {
     for (int i = 0; i < BYTE_SIZE; ++i) {
         printf("%i ", byte[i]);
@@ -270,6 +276,6 @@ int main() {
     set_termios();
     atexit(on_exit);
 
-    // TODO display intro
+    print_intro();
     start_game(1);
 }
