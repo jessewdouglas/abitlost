@@ -19,18 +19,17 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
 
 #define BYTE_SIZE 8
 
-char const *const exit_char = "\033[1;32mO\033[0m";
-char const *const obstacle_char = "\033[1;31mX\033[0m";
-
 typedef enum { in_progress, game_won, game_lost } win_state;
 
 struct termios old_termios;
+bool is_color_enabled = true;
 
 bool **bytes;
 int byte_rows;
@@ -136,11 +135,25 @@ void print_new_line(void) {
     ++lines_printed;
 }
 
+char const *one_exit() {
+    if (is_color_enabled) {
+        return "\033[1;32mO\033[0m";
+    }
+    return "O";
+}
+
+char const *zero_exit() {
+    if (is_color_enabled) {
+        return "\033[1;31mX\033[0m";
+    }
+    return "X";
+}
+
 void print_intro(void) {
     printf("Help the lost bit escape the sea of bytes!\n");
     printf("Use bitwise AND and XOR operations to navigate to the exits.\n");
-    printf("Get 1s to each %s, and 0s to each %s.\n\n", exit_char,
-           obstacle_char);
+    printf("Get 1s to each %s, and 0s to each %s.\n\n", one_exit(),
+           zero_exit());
 }
 
 void print_byte(bool const *byte, bool is_current) {
@@ -156,9 +169,9 @@ void print_byte(bool const *byte, bool is_current) {
 void print_destination(void) {
     for (int i = 0; i < BYTE_SIZE; ++i) {
         if (destination[i] == 0) {
-            printf("%s ", obstacle_char);
+            printf("%s ", zero_exit());
         } else if (destination[i] == 1) {
-            printf("%s ", exit_char);
+            printf("%s ", one_exit());
         } else {
             printf("  ");
         }
@@ -275,7 +288,13 @@ void on_exit(void) {
     free_bytes();
 }
 
-int main() {
+int main(int argc, char **argv) {
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "--no-color") == 0 || strcmp(argv[i], "-n") == 0) {
+            is_color_enabled = false;
+        }
+    }
+
     srandom(time(0));
 
     set_termios();

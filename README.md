@@ -20,6 +20,10 @@ make
 
 A Bit Lost requires a POSIX-compatible environment. Either Windows Subsystem for Linux (WSL) or Cygwin (https://www.cygwin.com/) will work for building and running. The instructions above for Unix-like environments apply when using these options.
 
+### Command-Line Flags
+
+- `--no-color` or `-n`: disable color
+
 ## Playing
 
 ### Objective
