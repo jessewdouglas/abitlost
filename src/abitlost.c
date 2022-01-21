@@ -289,17 +289,37 @@ void on_exit(void) {
 }
 
 int main(int argc, char **argv) {
+    int level = 1;
+
     for (int i = 1; i < argc; ++i) {
-        if (strcmp(argv[i], "--no-color") == 0 || strcmp(argv[i], "-n") == 0) {
+        char const *arg = argv[i];
+        if (!strcmp(arg, "--no-color") || !strcmp(arg, "-n")) {
             is_color_enabled = false;
+        } else if (!strcmp(arg, "--level") || !strcmp(arg, "-l")) {
+            if (i >= argc - 1) {
+                fprintf(stderr,
+                        "Error: no level number specified for --level\n");
+                exit(1);
+            }
+            char const *level_arg = argv[++i];
+            char *strtol_end;
+            level = strtol(level_arg, &strtol_end, 10);
+            if (level < 1) {
+                fprintf(stderr, "Error: invalid number provided for --level; "
+                                "specify a number greater than 0\n");
+                exit(1);
+            }
+        } else {
+            fprintf(stderr, "Error: invalid argument %s\n", arg);
+            exit(1);
         }
     }
-
-    srandom(time(0));
 
     set_termios();
     atexit(on_exit);
 
+    srandom(time(0));
+
     print_intro();
-    start_game(1);
+    start_game(level);
 }
