@@ -23,6 +23,7 @@ A Bit Lost requires a POSIX-compatible environment. Either Windows Subsystem for
 ### Command-Line Flags
 
 - `--no-color` or `-n`: disable color
+- `--level _n_` or `-l _n_`: start at level _n_, where _n_ is a whole number greater than 0
 
 ## Playing
 
@@ -46,7 +47,7 @@ Building on Windows throws warnings about implicit declarations for `srandom` an
 
 ## Copyright and License Notice
 
-Copyright 2022 Jesse Douglas (jesse@jessedouglas.net).
+Copyright (C) 2022 Jesse Douglas (jesse@jessedouglas.net).
 
 A Bit Lost is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
