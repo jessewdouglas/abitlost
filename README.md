@@ -45,7 +45,7 @@ For more information on bitwise AND and XOR, see the Wikipedia entry on bitwise 
 
 Building on Windows throws warnings about implicit declarations for `srandom` and `random`, but otherwise seems to compile and run fine.
 
-## Copyright and License Notice
+## Copyright and License Notices
 
 Copyright (C) 2022 Jesse Douglas (jesse@jessedouglas.net).
 
@@ -54,3 +54,5 @@ A Bit Lost is free software: you can redistribute it and/or modify it under the 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+Binary distributions for Windows may include object files from the Cygwin project. The Cygwin DLL and utilities are copyright (C) Cygwin authors. Source code and licensing terms for the Cygwin project are available at <https://cygwin.com/>.
