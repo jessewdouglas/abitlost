@@ -23,7 +23,7 @@ A Bit Lost requires a POSIX-compatible environment. Either Windows Subsystem for
 ### Command-Line Flags
 
 - `--no-color` or `-n`: disable color
-- `--level _n_` or `-l _n_`: start at level _n_, where _n_ is a whole number greater than 0
+- `--level n` or `-l n`: start at level _n_, where _n_ is a whole number greater than 0
 
 ## Playing
 
