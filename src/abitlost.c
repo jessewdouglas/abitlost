@@ -153,8 +153,8 @@ void print_intro(void) {
     printf("Copyright (C) 2022 Jesse Douglas.\n\n");
     printf("This program comes with ABSOLUTELY NO WARRANTY. This is free \n"
            "software, and you are welcome to redistribute it under certain \n"
-           "conditions. For details, read the GNU General Public License \n"
-           "version 3 at <https://www.gnu.org/licenses/gpl-3.0.en.html>.\n\n");
+           "conditions. For details, see the GNU General Public License \n"
+           "version 3 at <https://www.gnu.org/licenses/>.\n\n");
     printf("Help the lost bit escape the sea of bytes!\n\n");
     printf("Use bitwise AND and XOR operations to navigate to the exits.\n");
     printf("Get 1s to each %s, and 0s to each %s.\n\n", one_exit(),
