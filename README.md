@@ -4,7 +4,19 @@ A Bit Lost is a simple puzzle game run from the command line. Help a lost bit es
 
 A Bit Lost is an entry for 2022's C Jam on itch.io (https://itch.io/jam/c-jam), commemorating the 50th anniversary of the C programming language. The theme for the jam was "bitwise."
 
-## Building
+The source code for A Bit Lost is available on GitHub at <https://github.com/jessewdouglas/abitlost>.
+
+## Running a Precompiled Binary
+
+If you downloaded a precompiled binary, use a terminal to navigate to the directory containing the binary and invoke it:
+
+```
+.\abitlost
+```
+
+If you're on Windows, you can also double-click `abitlost.exe` in Windows Explorer.
+
+## Building From Source
 
 ### macOS, Linux, and Other Unices
 
@@ -20,11 +32,6 @@ make
 
 A Bit Lost requires a POSIX-compatible environment. Either Windows Subsystem for Linux (WSL) or Cygwin (https://www.cygwin.com/) will work for building and running. The instructions above for Unix-like environments apply when using these options.
 
-### Command-Line Flags
-
-- `--no-color` or `-n`: disable color
-- `--level n` or `-l n`: start at level _n_, where _n_ is a whole number greater than 0
-
 ## Playing
 
 ### Objective
@@ -32,6 +39,11 @@ A Bit Lost requires a POSIX-compatible environment. Either Windows Subsystem for
 Starting with a lone bit at the top of the play area, get the necessary bit values through the exits at the bottom, using the bitwise operations AND and XOR (exclusive OR) to advance. Each operation applies to your current byte row (marked by an arrow) and the next row, replacing the latter. Upon reaching the bottom row, if the bit values match the exits (`1` -> `O`, `0` -> `X`), you win the level and advance to the next. Each level adds either additional rows to navigate or additional exits to reach.
 
 For more information on bitwise AND and XOR, see the Wikipedia entry on bitwise operations at <https://en.wikipedia.org/wiki/Bitwise_operation>.
+
+### Command-Line Flags
+
+- `--no-color` or `-n`: disable color
+- `--level n` or `-l n`: start at level _n_, where _n_ is a whole number greater than 0
 
 ### Controls
 
