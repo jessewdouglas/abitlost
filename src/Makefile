@@ -1,4 +1,4 @@
-# Copyright 2022 Jesse Douglas.
+# Copyright (C) 2022 Jesse Douglas.
 
 # This file is part of A Bit Lost.
 
