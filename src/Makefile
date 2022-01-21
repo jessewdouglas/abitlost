@@ -16,7 +16,7 @@
 
 P=abitlost
 OBJECTS=abitlost.o
-CFLAGS=-std=c99 -g -Wall -Wextra -pedantic
+CFLAGS=-std=c99 -Wall -Wextra -pedantic -O2
 
 $(P): $(OBJECTS)
 	$(CC) $(LDFLAGS) -o $@ $^
