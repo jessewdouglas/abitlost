@@ -135,14 +135,14 @@ void print_new_line(void) {
     ++lines_printed;
 }
 
-char const *one_exit() {
+char const *one_exit(void) {
     if (is_color_enabled) {
         return "\033[1;32mO\033[0m";
     }
     return "O";
 }
 
-char const *zero_exit() {
+char const *zero_exit(void) {
     if (is_color_enabled) {
         return "\033[1;31mX\033[0m";
     }
